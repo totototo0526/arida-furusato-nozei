@@ -218,6 +218,89 @@
                         {{{ content }}}
                     </main>
 
+                    <!-- フィードバックUI (BaaS API連携) -->
+                    <div id="atlas-feedback-container">
+                      <div class="feedback-prompt">
+                        <p>このページに修正が必要な箇所はありますか？</p>
+                        <button id="btn-show-feedback" class="btn-feedback">報告する</button>
+                      </div>
+                      
+                      <div id="feedback-form" style="display: none;">
+                        <textarea id="feedback-text" placeholder="分かりにくい点や、間違っている箇所を教えてください..." rows="4"></textarea>
+                        <div class="feedback-actions">
+                          <button id="btn-cancel-feedback" class="btn-cancel">キャンセル</button>
+                          <button id="btn-submit-feedback" class="btn-submit">送信</button>
+                        </div>
+                        <p id="feedback-message" style="display: none;"></p>
+                      </div>
+                    </div>
+
+                    <script>
+                    document.addEventListener("DOMContentLoaded", () => {
+                        const btnShow = document.getElementById('btn-show-feedback');
+                        const btnCancel = document.getElementById('btn-cancel-feedback');
+                        const btnSubmit = document.getElementById('btn-submit-feedback');
+                        const formDiv = document.getElementById('feedback-form');
+                        const promptDiv = document.querySelector('.feedback-prompt');
+                        const textarea = document.getElementById('feedback-text');
+                        const msg = document.getElementById('feedback-message');
+
+                        const API_URL = "https://atlas.totototo0526.xyz/api/feedback";
+
+                        if (!btnShow) return;
+
+                        btnShow.addEventListener('click', () => {
+                            formDiv.style.display = 'block';
+                            promptDiv.style.display = 'none';
+                            textarea.focus();
+                        });
+
+                        btnCancel.addEventListener('click', () => {
+                            formDiv.style.display = 'none';
+                            promptDiv.style.display = 'flex';
+                            textarea.value = '';
+                            msg.style.display = 'none';
+                        });
+
+                        btnSubmit.addEventListener('click', async () => {
+                            const comment = textarea.value.trim();
+                            if (!comment) return;
+
+                            btnSubmit.disabled = true;
+                            btnSubmit.textContent = '送信中...';
+
+                            try {
+                                const res = await fetch(API_URL, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        url: window.location.href,
+                                        comment: comment
+                                    })
+                                });
+
+                                if (res.ok) {
+                                    formDiv.innerHTML = '<p style="color: #10b981; font-weight: bold; margin: 0;">🎉 フィードバックを送信しました。ご協力ありがとうございます！</p>';
+                                    setTimeout(() => {
+                                        formDiv.style.display = 'none';
+                                        promptDiv.style.display = 'flex';
+                                    }, 5000);
+                                } else {
+                                    throw new Error('Server returned an error');
+                                }
+                            } catch (e) {
+                                msg.textContent = 'エラーが発生しました。時間をおいて再度お試しください。';
+                                msg.style.display = 'block';
+                                msg.style.color = '#ef4444';
+                                btnSubmit.disabled = false;
+                                btnSubmit.textContent = '送信';
+                            }
+                        });
+                    });
+                    </script>
+
                     <!-- Common Footer (Locally Overridden) -->
                     <footer class="atlas-footer">
                         <div class="footer-content">
