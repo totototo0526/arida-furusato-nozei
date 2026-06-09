@@ -1,5 +1,9 @@
 name: Deploy Atlas Manual
 
+env:
+  # ★ 新しいプロジェクトを作る時は、ここの名前（URLのパスになります）を書き換えてください
+  PROJECT_NAME: arida
+
 # 発動条件：mainブランチにPushされた時
 on:
   push:
@@ -47,14 +51,14 @@ jobs:
         run: |
           # タイムスタンプで「今回のリリース用フォルダ」を作る（例: 20260605153000）
           TIMESTAMP=$(date +%Y%m%d%H%M%S)
-          RELEASE_DIR="/var/www/atlas/releases/$TIMESTAMP"
+          RELEASE_DIR="/var/www/docs/releases/${PROJECT_NAME}_$TIMESTAMP"
           ssh $USER@$HOST "mkdir -p $RELEASE_DIR"
           
           # 完成したHTML（book配下）をVPSの新しいフォルダに転送
           rsync -avz --delete ./book/ $USER@$HOST:$RELEASE_DIR/
           
-          # Nginxの案内板（current）を、今送った最新フォルダに向け直す（無停止デプロイ！）
-          ssh $USER@$HOST "ln -sfn $RELEASE_DIR /var/www/atlas/current"
+          # Nginxの案内板（ルート内のシンボリックリンク）を、今送った最新フォルダに向け直す（無停止デプロイ！）
+          ssh $USER@$HOST "ln -sfn $RELEASE_DIR /var/www/docs/$PROJECT_NAME"
           
           # サーバー容量節約のため、古い履歴は3つ残してあとは削除
-          ssh $USER@$HOST "cd /var/www/atlas/releases && ls -1tr | head -n -3 | xargs -d '\n' rm -rf --"
+          ssh $USER@$HOST "cd /var/www/docs/releases && ls -1tr ${PROJECT_NAME}_* | head -n -3 | xargs -d '\n' rm -rf --"
