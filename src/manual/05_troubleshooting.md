@@ -14,16 +14,21 @@
 
 ```mermaid
 stateDiagram-v2
-    state "01 未集計" as s01
-    state "02 申込確定" as s02
-    state "00 確定" as s00
-    state "06 出荷完了(正常)" as s06
-    state "99 出荷異常(保留)" as s99
+    state "発注・仕入伝票" as Purchase {
+        state "01 未集計" as p01
+        state "02 申込確定" as p02
+        p01 --> p02 : 役所が確定
+    }
     
-    s01 --> s02 : 役所が確定
-    s02 --> s00 : 振り分け＋日次締め
-    s00 --> s06 : 正常
-    s00 --> s99 : エラー
+    state "受注・売上伝票" as Sales {
+        state "00 確定" as s00
+        state "06 出荷完了(正常)" as s06
+        state "99 出荷異常(保留)" as s99
+        s00 --> s06 : 正常
+        s00 --> s99 : エラー
+    }
+    
+    p02 --> s00 : 振り分け＋日次締め
 ```
 
 ## 11.3 逆方向の遷移（解除・取消）

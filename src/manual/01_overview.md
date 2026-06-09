@@ -91,14 +91,20 @@ flowchart TD
 
 ```mermaid
 stateDiagram-v2
-    state "01 未集計" as s01
-    state "02 申込確定" as s02
-    state "00 確定(売上生成)" as s00
-    state "06 出荷完了(正常)" as s06
-    state "99 出荷異常(保留)" as s99
+    state "発注・仕入伝票（農家向け）" as Purchase {
+        state "01 未集計" as p01
+        state "02 申込確定" as p02
+        p01 --> p02 : 役所が確定
+    }
     
-    s01 --> s02 : 申込確定
-    s02 --> s00 : 振り分け
-    s00 --> s06 : 出荷実績取込
-    s00 --> s99 : 出荷実績取込
+    state "受注・売上伝票（寄付者向け）" as Sales {
+        state "00 確定(売上生成)" as s00
+        state "06 出荷完了(正常)" as s06
+        state "99 出荷異常(保留)" as s99
+        
+        s00 --> s06 : 出荷実績取込(正常)
+        s00 --> s99 : 出荷実績取込(異常)
+    }
+    
+    p02 --> s00 : 振り分け ＆ 日次締め
 ```
