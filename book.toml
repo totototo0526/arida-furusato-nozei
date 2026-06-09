@@ -14,3 +14,5 @@ additional-js = ["atlas-common/theme/atlas-alerts.js", "atlas-common/theme/elast
 [output.html.fold]
 enable = true
 level = 0
+[preprocessor.atlas]
+command = "../atlas-common/bin/mdbook-atlas"

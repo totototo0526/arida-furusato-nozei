@@ -11,3 +11,5 @@
 
 # 会議資料・議事録
 - [2026/06/10 リリース前MTG](meetings/20260610_pre_release.md)
+# 課題・改善要望
+- [課題管理票](issues/issue_list.md)
