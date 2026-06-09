@@ -32,4 +32,5 @@
 - [x] 自動デプロイメント (`deploy.yml`) の設計とVPS側の設定
 - [x] `mdbook` のマニュアル基盤構築、GitHub連携、日本語検索の最適化
 - [x] 共通テンプレート（`atlas-common`）のアーキテクチャ分離と最適化
-- [ ] 次期アーキテクチャ（APIサーバー・波及ビルド）の検証と実装（Next Phase）
+- [x] **フィードバック機能（BaaS）の実装**: `atlas-common/api` にRust(Axum)の永続プロセスを構築し、Discord Webhookへの通知機能と連携。
+- [ ] 次期アーキテクチャ（波及ビルド・全一斉アップデート等）の検証と実装（Next Phase）
