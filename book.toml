@@ -15,4 +15,4 @@ additional-js = ["atlas-common/theme/atlas-alerts.js", "atlas-common/theme/elast
 enable = true
 level = 0
 [preprocessor.atlas]
-command = "../atlas-common/bin/mdbook-atlas"
+command = "atlas-common/bin/mdbook-atlas"
