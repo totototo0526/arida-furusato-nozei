@@ -1,0 +1,25 @@
+/* -------------------------------------
+ *  Atlas Footer Styles (ローカル上書き)
+ * ------------------------------------- */
+.atlas-footer {
+  margin-top: 6rem;
+  padding: 1.5rem 0 1rem 0;
+  border-top: 1px solid rgba(128, 128, 128, 0.3); /* ライト・ダーク両対応の半透明な境界線 */
+  background-color: transparent; /* テーマの背景色を活かす */
+  color: var(--fg); /* mdbookの標準テキストカラー */
+  font-size: 0.85rem;
+  opacity: 0.7; /* 少し控えめな文字色に */
+}
+
+.atlas-footer .footer-content {
+  display: flex;
+  justify-content: flex-end; /* PDFのように右下に配置 */
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.atlas-footer p {
+  margin: 0;
+  font-family: 'Noto Sans JP', sans-serif;
+  letter-spacing: 0.05em;
+}

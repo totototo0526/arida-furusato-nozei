@@ -1,0 +1,3 @@
+[submodule "atlas-common"]
+	path = atlas-common
+	url = ../atlas-common

@@ -1,0 +1,262 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap');
+
+:root {
+  /* ブランドカラー：標準（ライト・Rust向け）の青系 */
+  --brand-color: #0066cc; /* 落ち着いたブルー */
+  --brand-color-hover: #004c99;
+  
+  /* mdbookの標準変数を上書き */
+  --sidebar-active: var(--brand-color);
+  --links: var(--brand-color);
+
+  /* 独自の変数（警告ボックス等） */
+  --admonish-bg: #f0f8ff; /* アリスブルー */
+  --admonish-shadow: rgba(0, 102, 204, 0.08);
+}
+
+/* ダークテーマ群（Navy, Coal, Ayu）向けのカラーリング */
+html.navy, html.coal, html.ayu {
+  --brand-color: #4da6ff; /* 暗背景でも見やすい明るいブルー */
+  --brand-color-hover: #80bfff;
+  
+  --sidebar-active: var(--brand-color);
+  --links: var(--brand-color);
+
+  --admonish-bg: rgba(77, 166, 255, 0.1); /* ダークになじむ透過ブルー */
+  --admonish-shadow: rgba(0, 0, 0, 0.3);
+}
+
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background-color: #f8f9fa; 
+}
+
+/* Page container refinement */
+.page {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  margin: 20px auto;
+  overflow: hidden; /* To keep border radius with sticky headers if any */
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-weight: 700;
+}
+
+/* ヘッダーの装飾 */
+h1 {
+  border-bottom: 3px solid var(--brand-color);
+  padding-bottom: 0.3em;
+}
+
+h2 {
+  border-bottom: 1px solid #eaecef;
+  padding-bottom: 0.3em;
+}
+
+/* 警告ボックス（Admonishの代替用・デフォルトは青系） */
+blockquote {
+  border-left: 4px solid var(--brand-color);
+  background-color: var(--admonish-bg);
+  margin: 1.5em 0;
+  padding: 1em 1.5em;
+  color: var(--fg); /* mdbookの標準文字色 */
+  border-radius: 4px 8px 8px 4px;
+  box-shadow: 0 2px 8px var(--admonish-shadow);
+}
+blockquote p {
+  margin: 0;
+}
+
+/* --- アラートの種類による色分け --- */
+/* 【注意】(Caution) - 黄色・オレンジ系 */
+blockquote.alert-caution {
+  border-left-color: #f39c12;
+  background-color: #fff9e6; /* ライト用 */
+  box-shadow: 0 2px 8px rgba(243, 156, 18, 0.08);
+}
+html.navy blockquote.alert-caution, 
+html.coal blockquote.alert-caution, 
+html.ayu blockquote.alert-caution {
+  background-color: rgba(243, 156, 18, 0.15); /* ダーク用 */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* 【警告】(Warning) - 赤系 */
+blockquote.alert-warning {
+  border-left-color: #e74c3c;
+  background-color: #fceceb; /* ライト用 */
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.08);
+}
+html.navy blockquote.alert-warning, 
+html.coal blockquote.alert-warning, 
+html.ayu blockquote.alert-warning {
+  background-color: rgba(231, 76, 60, 0.15); /* ダーク用 */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* コードブロックなどの微調整 */
+pre {
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
+}
+
+/* =========================================
+   追加の標準ドキュメント拡張スタイル
+   ========================================= */
+
+/* --- 1. 画像（スクリーンショット）の美化 --- */
+.content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.05); /* 背景が白い画像でも境界がわかるように */
+  margin: 1em 0;
+}
+html.navy .content img, 
+html.coal .content img, 
+html.ayu .content img {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* --- 2. 折りたたみ要素 (<details> / <summary>) の装飾 --- */
+details {
+  background-color: var(--admonish-bg);
+  border-radius: 6px;
+  border-left: 4px solid var(--brand-color);
+  margin: 1.5em 0;
+  padding: 0.5em 1em;
+  box-shadow: 0 2px 8px var(--admonish-shadow);
+  transition: all 0.3s ease;
+}
+details[open] {
+  padding-bottom: 1em;
+}
+summary {
+  font-weight: 700;
+  cursor: pointer;
+  outline: none;
+  color: var(--fg);
+  margin: -0.5em -1em;
+  padding: 0.5em 1em;
+  border-radius: 6px;
+}
+summary:hover {
+  color: var(--brand-color);
+  background-color: rgba(0, 0, 0, 0.03);
+}
+html.navy summary:hover, 
+html.coal summary:hover, 
+html.ayu summary:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* --- 3. キーボードショートカット (<kbd>) の装飾 --- */
+kbd {
+  display: inline-block;
+  padding: 0.15em 0.5em;
+  font-size: 0.85em;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+  color: #333;
+  background-color: #f7f7f7;
+  border: 1px solid #ccc;
+  border-bottom-color: #999;
+  border-radius: 4px;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.2), inset 0 0 0 1px #fff;
+  line-height: 1.2;
+}
+html.navy kbd, 
+html.coal kbd, 
+html.ayu kbd {
+  color: #eee;
+  background-color: #333;
+  border-color: #555;
+  border-bottom-color: #222;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.5), inset 0 0 0 1px #444;
+}
+
+/* --- 4. テーブルの横スクロール対応とデザイン向上（スマホ対応・ゼブラストライプ） --- */
+.content table {
+  display: block;
+  overflow-x: auto;
+  width: 100%;
+  border-collapse: collapse;
+}
+/* テーブルのゼブラストライプ（1行おきに背景色を変える） */
+.content table tbody tr:nth-child(2n) {
+  background-color: rgba(0, 0, 0, 0.03); /* ライト用 */
+}
+/* テーブルヘッダーの強調 */
+.content table th {
+  background-color: var(--brand-color);
+  color: #ffffff;
+  border: 1px solid var(--brand-color);
+}
+/* ダークモード向けのテーブル調整 */
+html.navy .content table tbody tr:nth-child(2n), 
+html.coal .content table tbody tr:nth-child(2n), 
+html.ayu .content table tbody tr:nth-child(2n) {
+  background-color: rgba(255, 255, 255, 0.05); /* ダーク用 */
+}
+html.navy .content table th, 
+html.coal .content table th, 
+html.ayu .content table th {
+  border-color: #333;
+}
+
+/* --- 5. インラインコード（code）の視認性アップ --- */
+/* インラインコードの装飾（preブロックの中以外） */
+:not(pre) > code {
+  color: #c7254e; /* 少し赤みを持たせて目立たせる（ライト向け） */
+  background-color: #f9f2f4;
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+  font-size: 0.9em;
+}
+/* ダークモード向け */
+html.navy :not(pre) > code, 
+html.coal :not(pre) > code, 
+html.ayu :not(pre) > code {
+  color: #ffb3c6;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* --- 6. リスト（ul, ol）の余白調整 --- */
+/* リストの間隔を少しだけ広げて読みやすくする */
+.content ul li,
+.content ol li {
+  margin-bottom: 0.4em;
+  line-height: 1.6;
+}
+/* 入れ子になったリストの余白調整 */
+.content ul ul,
+.content ol ol,
+.content ul ol,
+.content ol ul {
+  margin-top: 0.4em;
+  margin-bottom: 0;
+}
+
+/* --- 7. コンテンツ下部の余白（フィードバックボタン等用） --- */
+/* 画面右下に固定ボタンを置くため、コンテンツの末尾に余白を確保 */
+.page {
+  padding-bottom: 60px; /* 固定ボタンの高さ分くらい */
+}
+
+/* --- 8. 編集者向け（Markdownソース上でのみ読ませたい）非表示要素 --- */
+/* includeされたファイルの編集リンクなどを画面上で隠すためのクラス */
+.editor-only {
+  display: none !important;
+}
+
+/* --- 9. 印刷用（PDF出力時など）の制御 --- */
+@media print {
+  .page-break {
+    page-break-before: always; /* 古いブラウザ用 */
+    break-before: page;        /* モダンブラウザ用 */
+  }
+}

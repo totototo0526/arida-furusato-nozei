@@ -1,0 +1,16 @@
+[book]
+authors = ["keisuke-ueno"]
+language = "ja"
+src = "src"
+title = "有田市ふるさと納税支援システム"
+
+[output.html]
+theme = ".theme_build"
+git-repository-url = "https://github.com/totototo0526/arida-furusato-nozei"
+edit-url-template = "https://github.com/totototo0526/arida-furusato-nozei/edit/main/{path}"
+additional-css = ["atlas-common/theme/css/atlas-custom.css", "src/custom.css"]
+additional-js = ["atlas-common/theme/mermaid-init.js", "atlas-common/theme/atlas-alerts.js", "atlas-common/theme/elasticlunr-jp.js"]
+
+[output.html.fold]
+enable = true
+level = 0

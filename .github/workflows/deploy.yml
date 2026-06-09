@@ -1,0 +1,60 @@
+name: Deploy Atlas Manual
+
+# 発動条件：mainブランチにPushされた時
+on:
+  push:
+    branches:
+      - main  # ※もしデフォルトブランチが 'master' の場合は書き換えてください
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 工程1：最新のソースコードを取得する（★サブモジュールも忘れずに取ってくる！）
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          token: ${{ secrets.SUBMODULE_TOKEN }}
+
+      # 工程2：mdBookを動かす準備（コンベアに金型をセット）
+      - name: Setup mdBook
+        uses: peaceiris/actions-mdbook@v2
+        with:
+          mdbook-version: 'latest'
+
+      # 工程3：HTMLを組み立てる（make buildと同じ作業）
+      - name: Build mdBook
+        run: make build
+
+      # 工程4：GitHubサーバーに「合鍵」を持たせる
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.VPS_SSH_KEY }}
+          known_hosts: unnecessary
+          name: id_ed25519
+
+      - name: Add Known Hosts
+        run: ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
+      # 工程5：VPSにファイルを転送し、案内板の矢印（シンボリックリンク）を切り替える
+      - name: Rsync and Update Symlink
+        env:
+          HOST: ${{ secrets.VPS_HOST }}
+          USER: ${{ secrets.VPS_USERNAME }}
+        run: |
+          # タイムスタンプで「今回のリリース用フォルダ」を作る（例: 20260605153000）
+          TIMESTAMP=$(date +%Y%m%d%H%M%S)
+          RELEASE_DIR="/var/www/atlas/releases/$TIMESTAMP"
+          ssh $USER@$HOST "mkdir -p $RELEASE_DIR"
+          
+          # 完成したHTML（book配下）をVPSの新しいフォルダに転送
+          rsync -avz --delete ./book/ $USER@$HOST:$RELEASE_DIR/
+          
+          # Nginxの案内板（current）を、今送った最新フォルダに向け直す（無停止デプロイ！）
+          ssh $USER@$HOST "ln -sfn $RELEASE_DIR /var/www/atlas/current"
+          
+          # サーバー容量節約のため、古い履歴は3つ残してあとは削除
+          ssh $USER@$HOST "cd /var/www/atlas/releases && ls -1tr | head -n -3 | xargs -d '\n' rm -rf --"
