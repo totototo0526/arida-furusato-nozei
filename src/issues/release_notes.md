@@ -32,6 +32,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
+        // 各チケットの「最後のコメント（対応内容）」を並列で取得する
+        await Promise.all(releases.map(async (issue) => {
+            try {
+                const cRes = await fetch(`${apiBase}/api/issues/comments?issue_number=${issue.number}`);
+                if (cRes.ok) {
+                    const comments = await cRes.json();
+                    if (comments.length > 0) {
+                        issue.closingComment = comments[comments.length - 1].body;
+                    }
+                }
+            } catch(e) {}
+        }));
+
         // 月ごとにグルーピングする
         const grouped = {};
         releases.forEach(issue => {
@@ -54,7 +67,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const closeDate = new Date(issue.closed_at || issue.created_at).toLocaleDateString('ja-JP');
                 const safeTitle = escapeHtml(issue.title || 'タイトルなし');
                 
-                const rawHtml = issue.body ? marked.parse(issue.body) : '';
+                // コメントがあればコメントを優先、なければ本文を表示
+                const contentToDisplay = issue.closingComment 
+                    ? `**【対応内容】**\n${issue.closingComment}` 
+                    : issue.body;
+
+                const rawHtml = contentToDisplay ? marked.parse(contentToDisplay) : '';
                 const safeBodyHtml = DOMPurify.sanitize(rawHtml);
                 const bodyBlock = safeBodyHtml ? `<div class="issue-markdown-body" style="margin-top: 10px; padding: 15px; background: rgba(128,128,128,0.05); border-left: 3px solid #10b981; border-radius: 4px; font-size: 0.9em; line-height: 1.6;">${safeBodyHtml}</div>` : '';
 
